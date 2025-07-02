@@ -75,3 +75,37 @@ Na het voltooien van deze module kunnen studenten:
 
 **Ontwikkeld voor HBO Sportkunde** 🎓
 *Leer leiderschap in de praktijk van sport en bewegen*
+
+## 🚀 GitHub Setup Instructions
+
+### 1. Initialize Git (if not done)
+```bash
+git init
+```
+
+### 2. Add all files
+```bash
+git add .
+git commit -m "Initial commit: Leiderschap in Sport en Bewegen app"
+```
+
+### 3. Create GitHub Repository
+1. Go to [github.com](https://github.com)
+2. Click "New repository"
+3. Name it: `leiderschap-sport-bewegen`
+4. **Don't** check any boxes (README, .gitignore, license)
+5. Click "Create repository"
+
+### 4. Connect and Push
+```bash
+git remote add origin https://github.com/YOUR-USERNAME/leiderschap-sport-bewegen.git
+git branch -M main
+git push -u origin main
+```
+
+### 5. Deploy to Netlify (Optional)
+1. Connect your GitHub repository to Netlify
+2. Build command: `npm run build`
+3. Publish directory: `out`
+
+---
