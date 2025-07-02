@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import TheoryCard from './TheoryCard'
+import QuizComponent from './QuizComponent'
 
 // Types
 interface UserProgress {
@@ -522,6 +523,21 @@ export default function LeadershipApp() {
     setExpandedTheory(expandedTheory === theoryId ? null : theoryId)
   }
 
+  // Handle quiz completion
+  const handleQuizComplete = (score: number, total: number) => {
+    const points = score * 10 // 10 points per correct answer
+    const newProgress = {
+      ...userProgress,
+      quizCompleted: true,
+      quizScore: score,
+      totalPoints: userProgress.totalPoints + points
+    }
+    saveProgress(newProgress)
+  }
+
+  // Check if quiz is available
+  const isQuizAvailable = userProgress.readTheories.length >= 2
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
@@ -545,11 +561,11 @@ export default function LeadershipApp() {
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
                 className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${Math.min((userProgress.totalPoints / 590) * 100, 100)}%` }}
+                style={{ width: `${Math.min((userProgress.totalPoints / 250) * 100, 100)}%` }}
               ></div>
             </div>
             <p className="text-xs text-gray-500 mt-1">
-              {userProgress.readTheories.length}/{theories.length} theorieën gelezen
+              {userProgress.readTheories.length}/{theories.length} theorieën • Quiz: {userProgress.quizCompleted ? 'Voltooid' : 'Nog niet'}
             </p>
           </div>
         </header>
@@ -579,13 +595,18 @@ export default function LeadershipApp() {
             </button>
             <button
               onClick={() => setCurrentView('quiz')}
-              className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-6 py-2 rounded-lg font-medium transition-colors relative ${
                 currentView === 'quiz'
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
               🎯 Quiz
+              {isQuizAvailable && !userProgress.quizCompleted && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  !
+                </span>
+              )}
             </button>
           </div>
         </nav>
@@ -605,7 +626,7 @@ export default function LeadershipApp() {
                 <div className="grid md:grid-cols-3 gap-6 mb-8">
                   <div className="bg-blue-50 p-6 rounded-lg">
                     <h3 className="font-semibold text-blue-800 mb-2 text-lg">📚 {theories.length} Theorieën</h3>
-                    <p className="text-blue-600">Van Mintzberg tot Ferguson - alle essentiële leiderschapstheorieën</p>
+                    <p className="text-blue-600">Van Mintzberg tot French & Raven - essentiële leiderschapstheorieën</p>
                   </div>
                   <div className="bg-green-50 p-6 rounded-lg">
                     <h3 className="font-semibold text-green-800 mb-2 text-lg">🎯 Kennisquiz</h3>
@@ -613,7 +634,7 @@ export default function LeadershipApp() {
                   </div>
                   <div className="bg-purple-50 p-6 rounded-lg">
                     <h3 className="font-semibold text-purple-800 mb-2 text-lg">🏆 Puntensysteem</h3>
-                    <p className="text-purple-600">Verdien punten door theorieën te lezen en de quiz te maken</p>
+                    <p className="text-purple-600">50 punten per theorie + 10 punten per goed antwoord</p>
                   </div>
                 </div>
                 
@@ -636,7 +657,7 @@ export default function LeadershipApp() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Quiz voltooid:</span>
-                      <span className="font-medium">{userProgress.quizCompleted ? 'Ja' : 'Nee'}</span>
+                      <span className="font-medium">{userProgress.quizCompleted ? `Ja (${userProgress.quizScore}/10)` : 'Nee'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Totaal punten:</span>
@@ -649,13 +670,16 @@ export default function LeadershipApp() {
                   <h3 className="font-bold text-gray-800 mb-4">🎯 Volgende Stappen</h3>
                   <div className="space-y-2">
                     {userProgress.readTheories.length < theories.length && (
-                      <p className="text-gray-600">• Lees meer leiderschapstheorieën</p>
+                      <p className="text-gray-600">• Lees meer leiderschapstheorieën (+50 punten per theorie)</p>
                     )}
-                    {userProgress.readTheories.length >= 3 && !userProgress.quizCompleted && (
-                      <p className="text-gray-600">• Maak de kennisquiz</p>
+                    {isQuizAvailable && !userProgress.quizCompleted && (
+                      <p className="text-green-600">• 🎯 Quiz is nu beschikbaar! (+100 punten mogelijk)</p>
                     )}
                     {userProgress.readTheories.length === theories.length && userProgress.quizCompleted && (
                       <p className="text-green-600">🎉 Gefeliciteerd! Je hebt alles voltooid!</p>
+                    )}
+                    {!isQuizAvailable && (
+                      <p className="text-gray-500">• Lees minimaal 2 theorieën om de quiz te ontgrendelen</p>
                     )}
                   </div>
                 </div>
@@ -709,20 +733,36 @@ export default function LeadershipApp() {
 
           {currentView === 'quiz' && (
             <div className="max-w-4xl mx-auto">
-              <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">🎯 Kennisquiz</h2>
-                <p className="text-gray-600 mb-6">
-                  Quiz wordt binnenkort toegevoegd...
-                </p>
-                <div className="bg-gray-50 p-6 rounded-lg">
-                  <p className="text-gray-500">
-                    Lees eerst enkele theorieën voordat je de quiz kunt maken.
+              {!isQuizAvailable ? (
+                <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+                  <h2 className="text-2xl font-bold text-gray-800 mb-4">🔒 Quiz Vergrendeld</h2>
+                  <p className="text-gray-600 mb-6">
+                    Lees eerst minimaal 2 theorieën voordat je de quiz kunt maken.
                   </p>
-                  <p className="text-sm text-gray-400 mt-2">
-                    Aanbevolen: minimaal 3 theorieën gelezen
-                  </p>
+                  <div className="bg-blue-50 p-6 rounded-lg mb-6">
+                    <h3 className="font-semibold text-blue-800 mb-3">Voortgang naar Quiz</h3>
+                    <div className="flex items-center justify-center space-x-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">{userProgress.readTheories.length}</div>
+                        <div className="text-sm text-blue-600">Gelezen</div>
+                      </div>
+                      <div className="text-gray-400">/</div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-gray-400">2</div>
+                        <div className="text-sm text-gray-400">Vereist</div>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setCurrentView('theories')}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    📚 Ga naar Theorieën
+                  </button>
                 </div>
-              </div>
+              ) : (
+                <QuizComponent onComplete={handleQuizComplete} />
+              )}
             </div>
           )}
         </main>
