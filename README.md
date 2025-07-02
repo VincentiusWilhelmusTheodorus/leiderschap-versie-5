@@ -78,34 +78,64 @@ Na het voltooien van deze module kunnen studenten:
 
 ## 🚀 GitHub Setup Instructions
 
-### 1. Initialize Git (if not done)
+⚠️ **Belangrijk**: Deze instructies zijn voor gebruik op je lokale computer. Git is niet beschikbaar in de browser-ontwikkelomgeving.
+
+### Voor lokaal gebruik (na downloaden van de code):
+
+### 1. Download de code
+- Download alle bestanden naar je lokale computer
+- Of gebruik de "Download ZIP" optie als beschikbaar
+
+### 2. Installeer Git (indien nog niet geïnstalleerd)
+- **Windows**: Download van [git-scm.com](https://git-scm.com/)
+- **macOS**: `brew install git` (met Homebrew) of download van git-scm.com
+- **Linux**: `sudo apt-get install git` (Ubuntu/Debian) of equivalent voor jouw distributie
+
+### 3. Initialiseer Git repository
 ```bash
+cd /pad/naar/je/project
 git init
 ```
 
-### 2. Add all files
+### 4. Voeg bestanden toe en commit
 ```bash
 git add .
 git commit -m "Initial commit: Leiderschap in Sport en Bewegen app"
 ```
 
-### 3. Create GitHub Repository
-1. Go to [github.com](https://github.com)
-2. Click "New repository"
-3. Name it: `leiderschap-sport-bewegen`
-4. **Don't** check any boxes (README, .gitignore, license)
-5. Click "Create repository"
+### 5. Maak GitHub Repository
+1. Ga naar [github.com](https://github.com)
+2. Klik "New repository"
+3. Naam: `leiderschap-sport-bewegen`
+4. **Niet** aanvinken: README, .gitignore, license (deze bestaan al)
+5. Klik "Create repository"
 
-### 4. Connect and Push
+### 6. Verbind en push naar GitHub
 ```bash
-git remote add origin https://github.com/YOUR-USERNAME/leiderschap-sport-bewegen.git
+git remote add origin https://github.com/JOUW-USERNAME/leiderschap-sport-bewegen.git
 git branch -M main
 git push -u origin main
 ```
 
-### 5. Deploy to Netlify (Optional)
-1. Connect your GitHub repository to Netlify
+### 7. Deploy naar Netlify (Optioneel)
+1. Verbind je GitHub repository met Netlify
 2. Build command: `npm run build`
 3. Publish directory: `out`
+
+---
+
+## 💡 Alternatieve Deployment Opties
+
+Als je geen Git wilt gebruiken, kun je de applicatie ook direct deployen:
+
+### Netlify Drop
+1. Run `npm run build` lokaal
+2. Ga naar [netlify.com/drop](https://netlify.com/drop)
+3. Sleep de `out` folder naar de website
+
+### Vercel
+1. Ga naar [vercel.com](https://vercel.com)
+2. Upload je project bestanden
+3. Vercel detecteert automatisch de Next.js configuratie
 
 ---
